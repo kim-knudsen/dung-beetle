@@ -1,6 +1,9 @@
 import awsLambdaFastify from '@fastify/aws-lambda'
 import { createServer } from './server.js'
 
-const server = createServer()
+export const handler = async (event: unknown, context: unknown) => {
+    const server = await createServer()
+    const proxy = awsLambdaFastify(server)
 
-export const handler = awsLambdaFastify(server)
+    return proxy(event, context)
+}
