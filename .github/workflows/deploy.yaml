@@ -1,0 +1,36 @@
+name: Deploy to AWS Lambda
+
+on:
+    release:
+        types: [published]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 20
+
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
+            - name: Run tests
+              run: yarn test
+
+            - name: Compile TypeScript
+              run: yarn build
+
+            - name: Deploy to AWS Lambda
+              uses: appleboy/lambda-action@master
+              with:
+                  aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws_region: eu-north-1
+                  function_name: dungBeetleFoo
+                  zip_file: lambda.zip

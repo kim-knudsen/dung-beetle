@@ -9,10 +9,10 @@ export function createServer() {
 
     fastify
         .get('/', function handler(request, reply) {
-            return { hi: 'mom' }
+            return { hi: 'jimbo' }
         })
         .get('/hello', function handler(request, reply) {
-            return { hello: 'world' }
+            return { morning: 'joe' }
         })
 
     return fastify

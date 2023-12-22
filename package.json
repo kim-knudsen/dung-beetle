@@ -7,7 +7,9 @@
     "license": "MIT",
     "type": "module",
     "scripts": {
-        "build": "node build.mjs"
+        "build": "node build.mjs && cp package.json dist/ && cd dist && zip -r ../lambda.zip .",
+        "dev": "tsx ./src/server.ts",
+        "test": "echo \"Warning: no test(s) specified\""
     },
     "devDependencies": {
         "@types/node": "^20.10.5",
