@@ -4,6 +4,7 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import fastify from 'fastify'
 import { wrestlerRoutes } from './routes/wrestler-routes.js'
 import { Wrestler } from './types/wrestler-types.js'
+import { assertIsDefined } from './utils/assertions.js'
 
 const DOCUMENTATION_PATH = '/docs'
 
@@ -12,18 +13,19 @@ export async function createServer() {
         logger: true
     }).withTypeProvider<TypeBoxTypeProvider>()
 
+    const { HOST } = process.env
+
+    assertIsDefined(HOST, 'HOST')
+
     await server.register(fastifySwagger, {
         swagger: {
             info: {
-                title: 'Test swagger',
-                description: 'Testing the Fastify swagger API',
+                title: 'WrestleAWS',
+                description:
+                    'A REST API that provides unique and hilarious wrestler personas, catchphrases, and finishing moves.',
                 version: '0.1.0'
             },
-            externalDocs: {
-                url: 'https://swagger.io',
-                description: 'Find more info here'
-            },
-            host: 'localhost:3000',
+            host: HOST,
             schemes: ['http', 'https'],
             consumes: ['application/json'],
             produces: ['application/json'],
@@ -46,7 +48,7 @@ export async function createServer() {
     })
 
     server.register(wrestlerRoutes, {
-        prefix: '/v0.1'
+        prefix: '/v0.1/wrestler'
     })
 
     server.get('/', {

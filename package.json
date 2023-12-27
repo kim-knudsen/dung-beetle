@@ -8,9 +8,8 @@
     "type": "module",
     "scripts": {
         "build": "tsx build.ts && cp package.json dist/ && cd dist && zip -r ../lambda.zip .",
-        "dev": "tsx watch ./src/server.ts --startServer",
-        "test": "tsc --noEmit --pretty && npm audit",
-        "generate": "tsx scripts/generate.ts"
+        "dev": "tsx watch --env-file=.env ./src/server.ts --startServer",
+        "test": "tsc --noEmit --pretty && npm audit"
     },
     "devDependencies": {
         "@types/node": "^20.10.5",

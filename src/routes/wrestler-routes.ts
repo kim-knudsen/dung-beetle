@@ -1,19 +1,73 @@
-import { FastifyInstance, FastifyPluginCallback, FastifySchema } from 'fastify'
+import { Static, Type } from '@sinclair/typebox'
+import { FastifyPluginCallback } from 'fastify'
 import { db } from '../storage/db.js'
 import { Wrestler } from '../types/wrestler-types.js'
 
-const ransomWrestlerSchema: FastifySchema = {
-    description: 'Get a random wrestler',
+const randomWrestlerQuerystring = Type.Object({
+    name: Type.Optional(Wrestler.properties.name),
+    nickName: Type.Optional(Wrestler.properties.nickName)
+})
 
-    response: {
-        200: Wrestler
-    }
-}
+type RandomWrestlerQuerystring = Static<typeof randomWrestlerQuerystring>
 
-export const wrestlerRoutes: FastifyPluginCallback = (fastify: FastifyInstance, options, done) => {
-    fastify.get('/random', { schema: ransomWrestlerSchema }, async (request, reply) => {
-        return db.random()
-    })
+const wrestlerNotFoundError = Type.Object(
+    { error: Type.String() },
+    { description: 'When no wrestler matches the specified ID' }
+)
+
+export const wrestlerRoutes: FastifyPluginCallback = (fastify, options, done) => {
+    fastify.get<{
+        Querystring: RandomWrestlerQuerystring
+    }>(
+        '/random',
+        {
+            schema: {
+                description: 'Get a random wrestler',
+                querystring: randomWrestlerQuerystring,
+                response: {
+                    200: Wrestler
+                }
+            }
+        },
+        request => {
+            const { name, nickName } = request.query
+            const wrestler = { ...db.random() }
+
+            if (name) {
+                wrestler.name = name
+            }
+
+            if (nickName) {
+                wrestler.nickName = nickName
+            }
+
+            return wrestler
+        }
+    )
+
+    fastify.get<{
+        Params: {
+            id: string
+        }
+    }>(
+        '/:id',
+        {
+            schema: {
+                description: 'Get a wrestler by ID',
+                params: Type.Object({
+                    id: Wrestler.properties.id
+                }),
+                response: { 200: Wrestler, 404: wrestlerNotFoundError }
+            }
+        },
+        (request, reply) => {
+            try {
+                return db.byId(request.params.id)
+            } catch (error) {
+                reply.code(404).send({ error: 'Wrestler not found' })
+            }
+        }
+    )
 
     done()
 }
