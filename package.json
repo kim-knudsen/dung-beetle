@@ -9,13 +9,18 @@
     "scripts": {
         "build": "tsx build.ts && cp package.json dist/ && cd dist && zip -r ../lambda.zip .",
         "dev": "tsx watch --env-file=.env ./src/server.ts --startServer",
-        "test": "tsc --noEmit --pretty && npm audit"
+        "lint": "eslint ./src/**/*.ts",
+        "test": "tsc --noEmit --pretty && npm run lint && npm audit"
     },
     "devDependencies": {
         "@types/node": "^20.10.5",
+        "@typescript-eslint/eslint-plugin": "^6.16.0",
+        "@typescript-eslint/parser": "^6.16.0",
         "esbuild": "^0.19.10",
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-text-replace": "^1.3.0",
+        "eslint": "^8.56.0",
+        "eslint-config-prettier": "^9.1.0",
         "hashids": "^2.3.0",
         "tsx": "^4.7.0",
         "typescript": "^5.3.3"
@@ -27,6 +32,7 @@
         "@fastify/swagger-ui": "^2.0.1",
         "@fastify/type-provider-typebox": "^3.5.0",
         "@sinclair/typebox": "0.31.0",
-        "fastify": "^4.25.1"
+        "fastify": "^4.25.1",
+        "fuse.js": "^7.0.0"
     }
 }

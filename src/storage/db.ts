@@ -1,8 +1,12 @@
+import Fuse, { IFuseOptions } from 'fuse.js'
 import { Wrestler } from '../types/wrestler-types.js'
 import { getRandomElement } from '../utils/array-util.js'
 import { assertIsDefined } from '../utils/assertions.js'
 
-const wrestlers: ReadonlyArray<Wrestler> = [
+type ImmutableWrestler = Readonly<Wrestler>
+type ImmutableWrestlers = ReadonlyArray<ImmutableWrestler>
+
+const wrestlers: ImmutableWrestlers = [
     {
         id: 'Z2xy',
         name: 'David Mitchell',
@@ -805,6 +809,13 @@ const wrestlers: ReadonlyArray<Wrestler> = [
     }
 ]
 
+const fuseOptions: IFuseOptions<Wrestler> = {
+    keys: ['name', 'nickName', 'finisherMove', 'entranceMusic', 'catchPhrase'],
+    includeMatches: true,
+    threshold: 0.35
+}
+const fuse = new Fuse(wrestlers, fuseOptions)
+
 export const db = {
     random: () => getRandomElement(wrestlers),
     byId: (id: Wrestler['id']) => {
@@ -812,5 +823,6 @@ export const db = {
         assertIsDefined(result, 'wrestler')
 
         return result
-    }
+    },
+    search: (query: string): ImmutableWrestlers => fuse.search(query).map(result => result.item)
 }
