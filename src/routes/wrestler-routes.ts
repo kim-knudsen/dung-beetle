@@ -1,5 +1,5 @@
 import { Static, Type } from '@sinclair/typebox'
-import { FastifyPluginCallback } from 'fastify'
+import { FastifyInstance } from 'fastify'
 import { db } from '../storage/db.js'
 import { Wrestler } from '../types/wrestler-types.js'
 
@@ -21,7 +21,7 @@ const wrestlerNotFoundError = Type.Object(
     { description: 'When no wrestler matches the specified ID' }
 )
 
-export const wrestlerRoutes: FastifyPluginCallback = (fastify, options, done) => {
+export const wrestlerRoutes = async function (fastify: FastifyInstance) {
     fastify
         .get<{
             Querystring: RandomWrestlerQuerystring
@@ -93,6 +93,4 @@ export const wrestlerRoutes: FastifyPluginCallback = (fastify, options, done) =>
                 return db.search(query)
             }
         )
-
-    done()
 }

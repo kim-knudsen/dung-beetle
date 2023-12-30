@@ -11,8 +11,12 @@
             },
             "lambda": {
                 "runtime": "nodejs18.x",
+                "memoryMb": 512,
                 "payload": {},
-                "environmentVariables": {}
+                "environmentVariables": {
+                    "HOST": "localhost",
+                    "SCHEME": "http"
+                }
             }
         }
     ]
