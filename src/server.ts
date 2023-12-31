@@ -1,35 +1,29 @@
-import Fastify from 'fastify'
-import { realpathSync } from 'fs'
-import { pathToFileURL } from 'url'
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
+import fastify from 'fastify'
+import { swaggerRoutes } from './routes/swagger-routes.js'
+import { wrestlerRoutes } from './routes/wrestler-routes.js'
 
-export function createServer() {
-    const fastify = Fastify({
+export async function createServer() {
+    const server = fastify({
         logger: true
+    }).withTypeProvider<TypeBoxTypeProvider>()
+
+    const { STAGE = '' } = process.env
+
+    await server.register(swaggerRoutes, { prefix: STAGE })
+
+    await server.register(wrestlerRoutes, {
+        prefix: `v0.1/wrestler`
     })
 
-    fastify
-        .get('/', function handler(request, reply) {
-            return { hi: 'jimbo' }
-        })
-        .get('/hello', function handler(request, reply) {
-            return { morning: 'joe' }
-        })
-
-    return fastify
+    return server
 }
 
-// Called directly i.e. "node app"
-if (isMainModule()) {
+if (process.argv.includes('--startServer')) {
     try {
-        await createServer().listen({ port: 3000 })
+        const server = await createServer()
+        server.listen({ port: 3000 })
     } catch (error) {
         console.error(error)
     }
-}
-
-function isMainModule() {
-    const realPath = realpathSync(process.argv[1])
-    const realPathAsUrl = pathToFileURL(realPath).href
-
-    return import.meta.url === realPathAsUrl
 }
