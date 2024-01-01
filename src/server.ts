@@ -8,9 +8,7 @@ export async function createServer() {
         logger: true
     }).withTypeProvider<TypeBoxTypeProvider>()
 
-    const { STAGE = '' } = process.env
-
-    await server.register(swaggerRoutes, { prefix: STAGE })
+    await server.register(swaggerRoutes)
 
     await server.register(wrestlerRoutes, {
         prefix: `v0.1/wrestler`
