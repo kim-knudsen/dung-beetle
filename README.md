@@ -24,6 +24,15 @@ Please note, **Dung Beetle** is purely for educational purposes, aiming to provi
 
 ### Quick start
 
+Add a basic `.env` file at the root of the project, containing the following suitable for local development.
+
+```sh
+HOST="localhost:3000"
+SCHEME="http"
+```
+
+Install dependencies and run the project locally.
+
 ```sh
 npm install
 npm run dev

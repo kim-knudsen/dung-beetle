@@ -6,6 +6,9 @@
     "author": "Kim Knudsen <kim@knudsen.io>",
     "license": "MIT",
     "type": "module",
+    "engines": {
+        "node": ">=20.0.0"
+    },
     "scripts": {
         "clean": "rimraf dist lambda.zip",
         "build": "tsx build.ts && cp package.json dist/ && cd dist && zip -r ../lambda.zip .",
