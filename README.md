@@ -3,7 +3,9 @@
 </div>
 
 <div align="center">
-    ![Deployment](https://github.com/kim-knudsen/dung-beetle/actions/workflows/deploy.yaml/badge.svg)
+
+![Deployment](https://github.com/kim-knudsen/dung-beetle/actions/workflows/deploy.yaml/badge.svg)
+
 </div>
 
 <br />
